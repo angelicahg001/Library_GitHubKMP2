@@ -2,6 +2,11 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-multiplatform'
 apply plugin: 'kotlinx-serialization'
 
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: "base"
+
+
 android {
   compileSdkVersion 28
   defaultConfig {
@@ -14,6 +19,18 @@ android {
     }
   }
 }
+
+//Config Bintray
+def GROUP_ID="com.worldmobile"
+def ARTIFACT_ID="core-github-kmp"
+
+def BINTRAY_REPOSITORY="shared-kmp"
+def BINTRAY_ORGINIZATION="angelicahg001"
+
+def ISSUE_URL="https://github.com/angelicahg001/Library_GitHubKMP2/issues"
+def SITE_URL="https://github.com/angelicahg001/Library_GitHubKMP2"
+def VCS_URL="https://github.com/angelicahg001/Library_GitHubKMP2.git"
+def LIBRARY_VERSION_NAME=1.0
 
 kotlin {
   targets {
@@ -49,6 +66,55 @@ kotlin {
       implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serialization_version"
     }
   }
+
+  afterEvaluate {
+    project.publishing.publications.all {
+      groupId = GROUP_ID
+      if (it.name.contains('metadata')) {
+        artifactId = "$ARTIFACT_ID"
+      } else {
+        artifactId = "$ARTIFACT_ID-$name"
+      }
+    }
+  }
+/*
+  def getBintrayUserProperty() {
+    return hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+  }
+
+  def getBintrayApiKeyProperty() {
+    return hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+  }
+*/
+  bintray {
+    user = 'angelicahg001'
+    key = 'a26d09e179fa941774753d4324ea91a2d4c39d1f'
+    publish = false
+    pkg {
+      repo = BINTRAY_REPOSITORY
+      name = ARTIFACT_ID
+      userOrg = BINTRAY_ORGINIZATION
+      licenses = ['Apache-2.0']
+      vcsUrl = VCS_URL
+      websiteUrl = SITE_URL
+      issueTrackerUrl = ISSUE_URL
+
+      version {
+        name = LIBRARY_VERSION_NAME
+        vcsTag = LIBRARY_VERSION_NAME
+        released = new Date()
+      }
+    }
+  }
+
+  bintrayUpload.doFirst {
+    publications = publishing.publications.collect {
+      it.name
+    }.findAll {
+      it != "kotlinMultiplatform"
+    }
+  }
+
 }
 
 // workaround for https://youtrack.jetbrains.com/issue/KT-27170
