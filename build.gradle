@@ -7,12 +7,15 @@ buildscript {
   ext.coroutines_version='1.0.1'
   ext.kotlinx_coroutines_version='1.1.1'
   ext.serialization_version = '0.10.0'
+  ext.bintray_version = '1.8.5'
   repositories {
     maven { url 'https://plugins.gradle.org/m2/' }
     maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
     maven { url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies' }
     maven { url 'https://dl.bintray.com/kotlin/ktor' }
     maven { url "https://kotlin.bintray.com/kotlinx" }
+    maven { url = uri("https://maven.springframework.org/release") }
+    maven { url = uri("https://maven.restlet.com") }
     google()
     jcenter()
 
@@ -22,6 +25,7 @@ buildscript {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:$kotlin_native_version"
     classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_version"
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files
   }
@@ -33,7 +37,7 @@ allprojects {
     maven { url "https://kotlin.bintray.com/ktor" }
     google()
     jcenter()
-
+    mavenCentral()
   }
 }
 
